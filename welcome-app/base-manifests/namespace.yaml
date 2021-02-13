@@ -1,0 +1,6 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: welcome-app
+  labels:
+    istio-injection: enabled

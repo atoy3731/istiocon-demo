@@ -1,0 +1,5 @@
+resources:
+  - ./virtual-services.yaml
+  - ./metallb-config.yaml
+  - ./gateway.yaml
+

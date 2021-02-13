@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app-ingress
+  namespace: welcome-app
+spec:
+  hosts:
+    - "welcome-istiocon.atoy.lol"
+  gateways:
+    - istio-system/istio-ingressgateway
+  http:
+  - match:
+    - uri:
+        prefix: /api
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: backend.welcome-app.svc.cluster.local
+        port:
+          number: 5000
+  - route:
+    - destination:
+        host: ui.welcome-app.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,19 @@
+# This will allow 'GET' requests to the backend from the internet.
+
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: backend-authpolicy
+ namespace: welcome-app
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        ipBlocks: [ "0.0.0.0/0" ]
+    to:
+    - operation:
+        methods: ["GET"]

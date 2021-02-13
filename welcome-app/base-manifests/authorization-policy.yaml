@@ -1,0 +1,52 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: deny-authpolicy
+ namespace: welcome-app
+spec:
+  {}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: internal-authpolicy
+ namespace: welcome-app
+spec:
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        namespaces: [ "welcome-app" ]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: ui-authpolicy
+ namespace: welcome-app
+spec:
+  selector:
+    matchLabels:
+      app: ui
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        ipBlocks: [ "0.0.0.0/0" ]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: backend-authpolicy
+ namespace: welcome-app
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        ipBlocks: [ "0.0.0.0/0" ]
+    to:
+    - operation:
+        methods: ["GET"]
