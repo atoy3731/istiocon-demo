@@ -7,7 +7,7 @@ spec:
   hosts:
     - "welcome-istiocon.atoy.lol"
   gateways:
-    - istio-system/istio-ingressgateway
+    - istio-system/main
   http:
   - match:
     - uri:

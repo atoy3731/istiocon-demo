@@ -7,7 +7,7 @@ spec:
   hosts:
     - "kiali-istiocon.atoy.lol"
   gateways:
-    - istio-system/istio-ingressgateway
+    - istio-system/main
   http:
   - route:
     - destination:
@@ -24,7 +24,7 @@ spec:
   hosts:
     - "grafana-istiocon.atoy.lol"
   gateways:
-    - istio-system/istio-ingressgateway
+    - istio-system/main
   http:
   - route:
     - destination:
@@ -41,7 +41,7 @@ spec:
   hosts:
     - "prometheus-istiocon.atoy.lol"
   gateways:
-    - istio-system/istio-ingressgateway
+    - istio-system/main
   http:
   - route:
     - destination:
