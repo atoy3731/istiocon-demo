@@ -7,9 +7,20 @@ spec:
   selector:
     istio: ingressgateway 
   servers:
-  - port:
+  - hosts:
+    - "*"
+    port:
       number: 80
       name: http
       protocol: HTTP
-    hosts:
-    - "*.atoy.lol"
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - '*.atoy.lol'
+    port:
+      name: https-atoy-lol
+      number: 443
+      protocol: HTTPS
+    tls:
+      credentialName: atoy-lol-ingress
+      mode: SIMPLE   
