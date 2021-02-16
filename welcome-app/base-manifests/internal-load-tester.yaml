@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: internal-load-tester
+  namespace: tester
+  labels:
+    app: internal-load-tester
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: internal-load-tester
+  template:
+    metadata:
+      labels:
+        app: internal-load-tester
+    spec:
+      containers:
+      - name: internal-load-tester
+        image: atoy3731/load-tester:1.1
+        env:
+        - name: BASE_URL
+          value: "http://ui.welcome-app.svc.cluster.local"
+        - name: API_URL
+          value: "http://backend.welcome-app.svc.cluster.local:5000"
+        - name: THREAD_COUNT
+          value: "3"

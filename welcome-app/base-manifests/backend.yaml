@@ -5,8 +5,9 @@ metadata:
   namespace: welcome-app
   labels:
     app: backend
+    version: "1.0"
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: backend
@@ -14,6 +15,7 @@ spec:
     metadata:
       labels:
         app: backend
+        version: "1.0"
     spec:
       containers:
       - name: backend

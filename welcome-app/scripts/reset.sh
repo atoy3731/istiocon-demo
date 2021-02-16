@@ -1,7 +1,8 @@
 #!/bin/bash
 
 echo "Deleting backend authpolicy.."
-kubectl delete authorizationpolicy -n welcome-app backend-authconfig
+kubectl delete authorizationpolicy -n welcome-app backend-authpolicy
+kubectl delete authorizationpolicy -n welcome-app internal-tester-authpolicy
 
 echo "Deleting application to reset it.."
 kubectl delete -f ../base-manifests
@@ -13,6 +14,7 @@ done
 
 echo "Creating namespace.."
 kubectl apply -f ../base-manifests/namespace.yaml
+kubectl apply -f ../base-manifests/tester-namespace.yaml
 sleep 3
 
 echo "Creating application resources.."

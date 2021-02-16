@@ -5,8 +5,9 @@ metadata:
   namespace: welcome-app
   labels:
     app: ui
+    version: "1.4"
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: ui
@@ -14,6 +15,7 @@ spec:
     metadata:
       labels:
         app: ui
+        version: "1.4"
     spec:
       containers:
       - name: ui

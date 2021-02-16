@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-load-tester
+  namespace: tester
+  labels:
+    app: external-load-tester
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: external-load-tester
+  template:
+    metadata:
+      labels:
+        app: external-load-tester
+    spec:
+      containers:
+      - name: external-load-tester
+        image: atoy3731/load-tester:1.1
+        env:
+        - name: BASE_URL
+          value: "https://welcome-istiocon.atoy.lol"
+        - name: THREAD_COUNT
+          value: "3"

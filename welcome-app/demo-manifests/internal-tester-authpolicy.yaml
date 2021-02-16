@@ -1,0 +1,22 @@
+# This will allow 'GET' requests to the backend from the internet.
+
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: internal-tester-authpolicy
+ namespace: welcome-app
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/tester/sa/default"]
+    to:
+    - operation:
+        methods: ["GET"]
+
+
+
