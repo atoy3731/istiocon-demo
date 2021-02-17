@@ -1,0 +1,33 @@
+hostname: bigbang.dev
+
+flux:
+  interval: 1m
+  rollback:
+    cleanupOnFail: false
+
+clusterAuditor:
+  enabled: false
+
+gatekeeper:
+  values:
+    replicas: 1
+
+istio:
+  values:
+    kiali:
+      dashboard:
+        auth:
+          strategy: anonymous
+
+logging:
+  enabled: false
+
+monitoring:
+  enabled: false
+
+twistlock:
+  enabled: false
+  values:
+    console:
+      persistence:
+        size: 5Gi
