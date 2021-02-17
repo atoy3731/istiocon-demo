@@ -66,7 +66,7 @@ spec:
   hosts:
     - "keycloak-istiocon.atoy.lol"
   gateways:
-    - istio-system/main
+    - istio-system/http
   http:
   - route:
     - destination:
