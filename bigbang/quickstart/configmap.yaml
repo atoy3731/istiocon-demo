@@ -19,6 +19,14 @@ istio:
         auth:
           strategy: anonymous
 
+    extraServers:
+      - port:
+          name: http-atoy-lol
+          protocol: HTTP
+          number: 80
+        hosts:
+          - "*.atoy"
+
 logging:
   enabled: false
 
@@ -31,3 +39,13 @@ twistlock:
     console:
       persistence:
         size: 5Gi
+
+addons:
+  authservice:
+    enabled: true
+    values:
+      replicaCount: 1
+
+      selector:
+        key: auth
+        value: enabled

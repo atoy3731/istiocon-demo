@@ -10,9 +10,9 @@ metadata:
   namespace: bigbang
 spec:
   interval: 1m
-  url: https://repo1.dsop.io/platform-one/big-bang/customers/template.git
+  url: https://github.com/atoy3731/istiocon-demo.git
   ref:
-    branch: main
+    branch: master
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
@@ -24,7 +24,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: environment-repo
-  path: ./quickstart
+  path: ./bigbang/quickstart
   prune: true
   decryption:
     provider: sops
