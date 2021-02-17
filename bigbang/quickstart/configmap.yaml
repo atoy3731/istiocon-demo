@@ -19,19 +19,11 @@ istio:
         auth:
           strategy: anonymous
 
-    extraServers:
-      - port:
-          name: http-atoy-lol
-          protocol: HTTP
-          number: 80
-        hosts:
-          - "*.atoy"
-
 logging:
   enabled: false
 
 monitoring:
-  enabled: false
+  enabled: true
 
 twistlock:
   enabled: false
