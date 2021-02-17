@@ -6,6 +6,7 @@ metadata:
   labels:
     app: backend
     version: "1.0"
+    auth: enabled
 spec:
   replicas: 3
   selector:
@@ -16,6 +17,7 @@ spec:
       labels:
         app: backend
         version: "1.0"
+        auth: enabled
     spec:
       containers:
       - name: backend
@@ -33,6 +35,8 @@ kind: Service
 metadata:
   name: backend
   namespace: welcome-app
+  labels:
+    auth: enabled
 spec:
   selector:
     app: backend

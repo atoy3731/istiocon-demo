@@ -6,6 +6,7 @@ metadata:
   labels:
     app: ui
     version: "1.4"
+    auth: enabled
 spec:
   replicas: 3
   selector:
@@ -16,6 +17,7 @@ spec:
       labels:
         app: ui
         version: "1.4"
+        auth: enabled
     spec:
       containers:
       - name: ui
@@ -29,6 +31,8 @@ kind: Service
 metadata:
   name: ui
   namespace: welcome-app
+  labels:
+    auth: enabled
 spec:
   selector:
     app: ui
