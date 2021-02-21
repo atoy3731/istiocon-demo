@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: atoy3731/welcome-app-backend:1.0
+        image: atoy3731/welcome-app-backend:1.7
         ports:
         - containerPort: 5000
         env:

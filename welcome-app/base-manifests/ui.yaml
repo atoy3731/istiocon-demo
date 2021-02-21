@@ -18,12 +18,14 @@ spec:
         app: ui
         version: "1.4"
         auth: enabled
+        
     spec:
       containers:
       - name: ui
-        image: atoy3731/welcome-app-ui:1.4
+        image: atoy3731/welcome-app-ui:1.7
         ports:
         - containerPort: 80
+          name: http
 
 ---
 apiVersion: v1

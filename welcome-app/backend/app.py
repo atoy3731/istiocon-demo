@@ -1,12 +1,22 @@
 import os
-import pymongo
-from flask import Flask, app, jsonify
+from flask import Flask, app, jsonify, request
 from random import randint
+import jwt
+import pymongo
 
 app = Flask(__name__)
 
-FIRST_NAMES = [ "John", "David", "Anna", "Sarah" ]
-LAST_NAMES = [ "Smith", "Doe", "Parker", "Robinson" ]
+class NotFoundException(Exception):
+    pass
+
+SEED_USERS = [
+    {
+        'user_id': 'adam.toy',
+        'city': 'Washington',
+        'state': 'DC',
+        'country': 'US'
+    }
+]
 
 MONGO_HOST = os.environ.get('MONGODB_HOST', 'localhost')
 MONGO_PORT = os.environ.get('MONGODB_PORT', '27017')
@@ -37,27 +47,58 @@ def _init_mongo():
     mongo_db = mongo_client[MONGO_DB]
     mongo_collection = mongo_db[MONGO_COLLECTION]
 
-    for x in range(0, ENTRY_NUMBER):
-        entry = { "firstName": FIRST_NAMES[randint(0, len(FIRST_NAMES)-1)], "lastName": LAST_NAMES[randint(0, len(LAST_NAMES)-1)] }
-        mongo_collection.insert_one(entry)
+    for user in SEED_USERS:
+        print(user)
+        mongo_collection.insert_one(user)
 
-@app.route('/user')
-def get_user():
-    print('Getting user')
+def _get_user_location(user_id):
     mongo_db = mongo_client[MONGO_DB]
     mongo_collection = mongo_db[MONGO_COLLECTION]
 
-    response = mongo_collection.aggregate([{ "$sample": { "size": 1 } } ])
-    user = None
+    user = mongo_collection.find_one({'user_id': user_id})
+    
+    if user is None:
+        raise NotFoundException
+    
+    return  {
+        'city': user['city'],
+        'state': user['state'],
+        'country': user['country']
+    }
 
-    for r in response:
+@app.route('/user')
+def get_user():
+    if 'Jwt' in request.headers:
+        print('Getting user from JWT')
+        auth_jwt = request.headers.get('Jwt')
+        decoded_auth_jwt = jwt.decode(auth_jwt, options={"verify_signature": False, "verify_aud": False})
+
         user = {
-            'firstName': r['firstName'],
-            'lastName': r['lastName']
+            'random': False,
+            'firstName': decoded_auth_jwt['given_name'],
+            'lastName': decoded_auth_jwt['family_name']
         }
-        return jsonify(user)
+
+        try:
+            user.update(_get_user_location(decoded_auth_jwt['preferred_username']))
+        except NotFoundException:
+            return jsonify({ "error": "UserNotFoundException" }), 500
+
+    else:
+        print('Uh oh, no auth token. Returning an empty user.')
+        user = {
+            'random': True,
+            'firstName': None,
+            'lastName': None,
+            'city': None,
+            'state': None,
+            'country': None
+        }
+
+    return jsonify(user)
 
 if __name__ == '__main__':
     _init_mongo()
 
+    print('Running app on port {}..'.format(APPLICATION_PORT))
     app.run(host=APPLICATION_HOST, port=APPLICATION_PORT)

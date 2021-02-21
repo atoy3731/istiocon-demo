@@ -5,10 +5,18 @@ metadata:
   namespace: welcome-app
 spec:
   hosts:
-    - "welcome-istiocon.atoy.lol"
+    - "welcome.istiocon.xyz"
   gateways:
     - istio-system/istio-ingressgateway
   http:
+  - match:
+    - uri:
+        prefix: /oauth
+    route:
+    - destination:
+        host: ui.welcome-app.svc.cluster.local
+        port:
+          number: 80
   - match:
     - uri:
         prefix: /api

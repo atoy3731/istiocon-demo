@@ -1,3 +1,29 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: keycloak
+  namespace: istio-system
+spec:
+  selector:
+    istio: keycloak
+  servers:
+  - hosts:
+    - 'keycloak.istiocon.xyz'
+    port:
+      name: http-passthrough
+      number: 80
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - 'keycloak.istiocon.xyz'
+    port:
+      name: https-passthrough
+      number: 443
+      protocol: HTTPS
+    tls:
+      mode: PASSTHROUGH
+---
 kind: Namespace
 apiVersion: v1
 metadata:
@@ -30,17 +56,29 @@ spec:
         ports:
         - containerPort: 8080
         env:
+        - name: DB_VENDOR
+          value: postgres
         - name: KEYCLOAK_USER
           value: admin
         - name: KEYCLOAK_PASSWORD
           value: admin
+        - name: DB_ADDR
+          value: postgres.keycloak.svc.cluster.local
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_DATABASE
+          value: keycloak
+        - name: DB_USER
+          value: keycloak
+        - name: DB_PASSWORD
+          value: password
         volumeMounts:
         - name: certs
           mountPath: "/etc/x509/https"
       volumes:
       - name: certs
         secret:
-          secretName: atoy-lol-ingress
+          secretName: main-cert
           defaultMode: 0755
 ---
 apiVersion: v1
@@ -53,9 +91,9 @@ spec:
     app: keycloak
   ports:
     - protocol: TCP
-      name: http
-      port: 8080
-      targetPort: 8080
+      name: https
+      port: 8443
+      targetPort: 8443
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -64,12 +102,76 @@ metadata:
   namespace: keycloak
 spec:
   hosts:
-    - "keycloak-istiocon.atoy.lol"
+    - "keycloak.istiocon.xyz"
   gateways:
-    - istio-system/http
+    - istio-system/keycloak
   http:
   - route:
     - destination:
         host: keycloak.keycloak.svc.cluster.local
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - keycloak.istiocon.xyz
+    route:
+    - destination:
+        host: keycloak.keycloak.svc.cluster.local
         port:
-          number: 8080
+          number: 8443
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: keycloak
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres
+  namespace: keycloak
+  labels:
+    app: postgres
+spec:
+  volumes:
+    - name: postgres-storage
+      persistentVolumeClaim:
+        claimName: postgres-pvc
+  containers:
+    - name: postgres
+      image: postgres
+      ports:
+        - containerPort: 5432
+          name: "tcp-psql"
+      env:
+        - name: POSTGRES_DB
+          value: keycloak
+        - name: POSTGRES_USER
+          value: keycloak
+        - name: POSTGRES_PASSWORD
+          value: password
+      volumeMounts:
+        - mountPath: "/var/lib/postgresql/data"
+          name: postgres-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: keycloak
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      name: tcp
+      port: 5432
+      targetPort: 5432

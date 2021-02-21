@@ -17,5 +17,13 @@ kubectl apply -f ../base-manifests/namespace.yaml
 kubectl apply -f ../base-manifests/tester-namespace.yaml
 sleep 3
 
+echo "Copying pull secret from authservice namespace.."
+kubectl get secret private-registry --namespace=authservice --export -o yaml | kubectl apply --namespace=welcome-app -f -
+kubectl get secret private-registry --namespace=authservice --export -o yaml | kubectl apply --namespace=tester -f -
+
+
 echo "Creating application resources.."
 kubectl apply -f ../base-manifests
+
+echo "Patching envoyFilter selector.."
+kubectl get envoyfilter -n istio-system authservice -o yaml | sed 's/auth: enabled/auth: none/g' | kubectl apply -f -
