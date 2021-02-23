@@ -37,11 +37,11 @@ twistlock:
 addons:
   authservice:
     git:
-      tag: "0.1.6-bb.0"
+      tag: "0.1.6-bb.2"
     enabled: true
     values:
       replicaCount: 1
-      
+
 
       selector:
         key: auth
