@@ -41,6 +41,7 @@ addons:
     enabled: true
     values:
       replicaCount: 1
+      
 
       selector:
         key: auth
