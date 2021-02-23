@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Copying config.."
+cp ~/.kube/istio ~/.kube/config
+
 echo "Deleting backend authpolicy.."
 kubectl delete authorizationpolicy -n welcome-app backend-authpolicy
 kubectl delete authorizationpolicy -n welcome-app internal-tester-authpolicy

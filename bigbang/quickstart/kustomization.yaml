@@ -1,7 +1,7 @@
 # When updating the version of BigBang, make sure to update
 #   both the bases reference and the GitRepository reference
 bases:
-- https://repo1.dsop.io/platform-one/big-bang/umbrella.git//base?ref=1.0.6
+- https://repo1.dsop.io/platform-one/big-bang/umbrella.git//base?ref=1.1.0
 resources:
 - ingress-cert.enc.yaml
 configMapGenerator:
