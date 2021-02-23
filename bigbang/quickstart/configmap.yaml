@@ -42,6 +42,8 @@ addons:
     values:
       replicaCount: 1
 
+      image:
+        repository: registry.dsop.io/platform-one/big-bang/apps/sandbox/authservice
 
       selector:
         key: auth
