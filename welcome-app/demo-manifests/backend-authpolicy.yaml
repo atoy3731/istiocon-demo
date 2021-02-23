@@ -13,7 +13,7 @@ spec:
   rules:
   - from:
     - source:
-        ipBlocks: [ "0.0.0.0/0" ]
+        namespaces: ["istio-system"]
     to:
     - operation:
         methods: ["GET"]
