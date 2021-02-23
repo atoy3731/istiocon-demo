@@ -5,7 +5,6 @@ cp ~/.kube/istio ~/.kube/config
 
 echo "Deleting backend authpolicy.."
 kubectl delete authorizationpolicy -n welcome-app backend-authpolicy
-kubectl delete authorizationpolicy -n welcome-app internal-tester-authpolicy
 
 echo "Deleting application to reset it.."
 kubectl delete -f ../base-manifests
@@ -17,13 +16,10 @@ done
 
 echo "Creating namespace.."
 kubectl apply -f ../base-manifests/namespace.yaml
-kubectl apply -f ../base-manifests/tester-namespace.yaml
 sleep 3
 
 echo "Copying pull secret from authservice namespace.."
 kubectl get secret private-registry --namespace=authservice --export -o yaml | kubectl apply --namespace=welcome-app -f -
-kubectl get secret private-registry --namespace=authservice --export -o yaml | kubectl apply --namespace=tester -f -
-
 
 echo "Creating application resources.."
 kubectl apply -f ../base-manifests
