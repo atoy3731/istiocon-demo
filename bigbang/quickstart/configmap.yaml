@@ -1,4 +1,4 @@
-hostname: atoy.lol
+hostname: istiocon.xyz
 
 flux:
   interval: 1m
